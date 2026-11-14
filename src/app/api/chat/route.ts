@@ -4,6 +4,7 @@ import { searchCropKnowledge } from '@/lib/cropSearch';
 import { executeTavilySearch } from '@/lib/tavilySearch';
 import { SEGMENT_CROP_LESION_TOOL } from '@/lib/aiTools';
 import { segmentAndAnnotateCropLesion } from '@/lib/visionSegmentation';
+import { deductChatXu } from '@/lib/xuService';
 
 export const runtime = 'nodejs';
 
@@ -119,7 +120,8 @@ export async function POST(req: NextRequest) {
     });
   }
 
-  const { messages, model, webSearchEnabled = true } = body || {};
+  const { messages, model, webSearchEnabled = true, userId, conversationId } = body || {};
+  const effectiveUserId = userId || 'guest';
 
   if (!Array.isArray(messages) || messages.length === 0) {
     return new Response(JSON.stringify({ error: 'Thiếu mảng tin nhắn hợp lệ' }), {
@@ -552,6 +554,21 @@ HƯỚNG DẪN TRẢ LỜI BÁC SĨ CÂY TRỒNG NAM BỘ:
         }
       } finally {
         if (keepAliveInterval) clearInterval(keepAliveInterval);
+        try {
+          if (effectiveUserId && effectiveUserId !== 'guest') {
+            const deductResult = await deductChatXu(effectiveUserId, conversationId);
+            if (deductResult?.success) {
+              sendEvent({
+                type: 'xu_deducted',
+                amount: deductResult.is_vip ? 0 : 1,
+                new_balance: deductResult.new_balance,
+                is_vip: deductResult.is_vip,
+              });
+            }
+          }
+        } catch (xuErr) {
+          console.warn('deductChatXu error in chat route:', xuErr);
+        }
         try {
           if (!isCancelled && !req.signal.aborted) {
             controller.enqueue(encoder.encode('data: [DONE]\n\n'));

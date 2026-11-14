@@ -20,6 +20,8 @@ import {
   Pencil,
   Check,
   FlaskConical,
+  Coins,
+  Plus,
 } from 'lucide-react';
 import TankMixModal from '@/components/tankMix/TankMixModal';
 import gsap from 'gsap';
@@ -40,6 +42,10 @@ export default function AppSidebar() {
     toggleSidebar,
     setIsAuthModalOpen,
     setIsHelpOpen,
+    isCoinModalOpen,
+    setIsCoinModalOpen,
+    xuBalance,
+    isProActive,
     currentUser,
     userProfile,
   } = useChat();
@@ -329,6 +335,30 @@ export default function AppSidebar() {
               <span className="flex-1 text-left truncate">Toàn thư cây trồng</span>
             </Link>
 
+            {/* Ví AgriXu (Coin / Tokenomics) Button */}
+            <button
+              type="button"
+              data-testid="sidebar-coin-button"
+              onClick={() => {
+                setIsCoinModalOpen(true);
+                if (window.innerWidth < 768) setIsSidebarOpen(false);
+              }}
+              className="w-full flex items-center justify-between px-3 py-2 rounded-xl bg-[#ffffff] hover:bg-amber-50/60 dark:bg-[#212121] dark:hover:bg-amber-950/20 text-[#0d0d0d] dark:text-[#ececec] text-xs font-semibold transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer border border-amber-500/30 dark:border-amber-500/30 shadow-xs group"
+            >
+              <div className="flex items-center gap-2.5 min-w-0">
+                <div className="w-5 h-5 rounded-full bg-amber-500/20 dark:bg-amber-400/20 flex items-center justify-center shrink-0 text-amber-600 dark:text-amber-400">
+                  <Coins className="w-3.5 h-3.5" strokeWidth={2} />
+                </div>
+                <span className="truncate">Ví AgriXu</span>
+              </div>
+              <div className="flex items-center gap-1.5 shrink-0">
+                <span className="px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-700 dark:text-amber-300 font-bold text-[11px]">
+                  {isProActive ? 'PRO' : `${xuBalance} Xu`}
+                </span>
+                <Plus className="w-3 h-3 text-amber-600 dark:text-amber-400 group-hover:scale-110 transition-transform" />
+              </div>
+            </button>
+
             {/* Virtual Spray Tank Simulator Button (Tạm ẩn) */}
             {false && (
               <button
@@ -387,8 +417,25 @@ export default function AppSidebar() {
             )}
           </div>
 
-          {/* Quick Action: Help only (Settings removed from here, accessible via Profile card) */}
-          <div className="px-2.5 py-1.5 border-t border-[#e5e5e5] dark:border-[#262626]">
+          {/* Quick Action: Ví AgriXu & Trợ giúp */}
+          <div className="px-2.5 py-1.5 border-t border-[#e5e5e5] dark:border-[#262626] space-y-0.5">
+            <button
+              type="button"
+              onClick={() => {
+                setIsCoinModalOpen(true);
+                if (window.innerWidth < 768) setIsSidebarOpen(false);
+              }}
+              className="w-full flex items-center justify-between px-2.5 py-2 rounded-xl hover:bg-amber-50/50 dark:hover:bg-amber-950/20 text-xs font-medium text-[#5d5d5d] dark:text-[#b4b4b4] hover:text-[#0d0d0d] dark:hover:text-white transition-colors cursor-pointer"
+            >
+              <div className="flex items-center gap-2.5">
+                <Coins className="w-4 h-4 text-amber-500 shrink-0" strokeWidth={1.5} />
+                <span>Nạp Xu & Gói Plus</span>
+              </div>
+              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-amber-500/15 text-amber-600 dark:text-amber-400">
+                {isProActive ? 'PRO' : `${xuBalance} Xu`}
+              </span>
+            </button>
+
             <button
               type="button"
               data-testid="sidebar-help-button"

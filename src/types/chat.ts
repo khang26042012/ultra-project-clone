@@ -78,8 +78,16 @@ export interface ChatContextType {
   setIsHelpOpen: (open: boolean) => void;
   isUpgradeOpen: boolean;
   setIsUpgradeOpen: (open: boolean) => void;
+  isCoinModalOpen: boolean;
+  setIsCoinModalOpen: (open: boolean) => void;
   isAuthModalOpen: boolean;
   setIsAuthModalOpen: (open: boolean) => void;
+  xuBalance: number;
+  setXuBalance: (balance: number | ((prev: number) => number)) => void;
+  subscriptionTier: string;
+  isProActive: boolean;
+  claimDailyBonus: () => Promise<{ awarded: boolean; amount: number; message?: string }>;
+  refreshXuStatus: () => Promise<void>;
   currentUser: User | null;
   login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
   register: (name: string, email: string, password: string) => Promise<{ success: boolean; error?: string }>;

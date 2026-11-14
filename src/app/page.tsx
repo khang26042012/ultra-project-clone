@@ -8,11 +8,20 @@ import MessageList from '@/components/chat/MessageList';
 import FloatingInputIsland from '@/components/input/FloatingInputIsland';
 import HelpModal from '@/components/modals/HelpModal';
 import UpgradeModal from '@/components/modals/UpgradeModal';
+import CoinModal from '@/components/modals/CoinModal';
 import AuthModal from '@/components/modals/AuthModal';
-import { SquarePen } from 'lucide-react';
+import { SquarePen, Coins } from 'lucide-react';
 
 function ChatApp() {
-  const { activeConversation, isSidebarOpen, toggleSidebar, createNewChat } = useChat();
+  const {
+    activeConversation,
+    isSidebarOpen,
+    toggleSidebar,
+    createNewChat,
+    xuBalance,
+    isProActive,
+    setIsCoinModalOpen,
+  } = useChat();
 
   const hasMessages = activeConversation && activeConversation.messages.length > 0;
 
@@ -41,6 +50,20 @@ function ChatApp() {
               <span className="w-4 h-0.5 bg-current rounded-full" />
               <span className="w-4 h-0.5 bg-current rounded-full" />
             </div>
+          </button>
+
+          {/* Nút Ví AgriXu hiển thị số dư coin tiện lợi */}
+          <button
+            type="button"
+            data-testid="header-coin-button"
+            onClick={() => setIsCoinModalOpen(true)}
+            title="Ví AgriXu & Nạp tiền"
+            className="pointer-events-auto flex items-center gap-1.5 px-3 py-2 rounded-full bg-white/90 dark:bg-[#212121]/90 backdrop-blur-md shadow-[0_2px_8px_rgba(0,0,0,0.08)] dark:shadow-none border border-amber-500/30 text-[#0d0d0d] dark:text-white hover:scale-105 active:scale-95 transition-all cursor-pointer text-xs font-semibold"
+          >
+            <Coins className="w-3.5 h-3.5 text-amber-500" strokeWidth={2} />
+            <span className="font-bold text-amber-700 dark:text-amber-300">
+              {isProActive ? 'PRO' : `${xuBalance} Xu`}
+            </span>
           </button>
 
           {/* Nút Tạo Chat Mới bên phải: Khối tròn mềm mại */}
@@ -72,6 +95,7 @@ function ChatApp() {
         {/* Global Modals */}
         <HelpModal />
         <UpgradeModal />
+        <CoinModal />
         <AuthModal />
       </div>
     </div>

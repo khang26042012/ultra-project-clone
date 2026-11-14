@@ -27,9 +27,11 @@ import {
   Check,
   X,
   FlaskConical,
+  Coins,
 } from 'lucide-react';
 import TankMixModal from '@/components/tankMix/TankMixModal';
 import AuthModal from '@/components/modals/AuthModal';
+import CoinModal from '@/components/modals/CoinModal';
 import { ThemeMode, FontSizeOption } from '@/types/chat';
 
 function SettingsView() {
@@ -48,9 +50,12 @@ function SettingsView() {
     clearChatHistory,
     exportBackupJson,
     logout,
+    currentUser,
     updateAvatar,
     userProfile,
-    currentUser,
+    xuBalance,
+    isProActive,
+    setIsCoinModalOpen,
     setIsAuthModalOpen,
   } = useChat();
 
@@ -350,6 +355,70 @@ function SettingsView() {
                     <span>Bình phun ảo BVTV</span>
                   </button>
                 )}
+              </div>
+            </div>
+          )}
+
+          {/* Group: Ví AgriXu & Gói Dịch Vụ */}
+          {(matchesSearch('ví') ||
+            matchesSearch('xu') ||
+            matchesSearch('coin') ||
+            matchesSearch('gói') ||
+            matchesSearch('nạp tiền') ||
+            matchesSearch('plus')) && (
+            <div className="space-y-1.5">
+              <div className="px-3 text-[11px] font-semibold text-[#8e8e8e] uppercase tracking-wider">
+                Ví AgriXu & Gói Dịch Vụ
+              </div>
+              <div className="rounded-2xl bg-[#f9f9f9] dark:bg-[#1a1a1a] border border-[#e5e5e5] dark:border-[#2a2a2a] divide-y divide-[#e5e5e5] dark:divide-[#262626] overflow-hidden shadow-2xs">
+                <button
+                  type="button"
+                  onClick={() => setIsCoinModalOpen(true)}
+                  className="w-full flex items-center justify-between p-3.5 hover:bg-[#f2f2f2] dark:hover:bg-[#222222] transition-colors cursor-pointer text-left"
+                >
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="w-8 h-8 rounded-xl bg-amber-500/15 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
+                      <Coins className="w-4 h-4" strokeWidth={1.5} />
+                    </div>
+                    <div>
+                      <div className="text-sm font-medium text-[#0d0d0d] dark:text-white flex items-center gap-2">
+                        <span>Số dư ví AgriXu</span>
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-700 dark:text-amber-300">
+                          {isProActive ? 'PRO' : `${xuBalance} Xu`}
+                        </span>
+                      </div>
+                      <div className="text-xs text-[#737373] dark:text-[#8e8e8e]">
+                        1 Xu / lượt chẩn đoán • Nhận +3 Xu mỗi ngày khi điểm danh
+                      </div>
+                    </div>
+                  </div>
+                  <span className="text-xs font-semibold text-amber-600 dark:text-amber-400">
+                    Nạp thêm →
+                  </span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setIsCoinModalOpen(true)}
+                  className="w-full flex items-center justify-between p-3.5 hover:bg-[#f2f2f2] dark:hover:bg-[#222222] transition-colors cursor-pointer text-left"
+                >
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-amber-500 to-amber-400 text-white flex items-center justify-center shrink-0">
+                      <Sparkles className="w-4 h-4" strokeWidth={1.5} />
+                    </div>
+                    <div>
+                      <div className="text-sm font-medium text-[#0d0d0d] dark:text-white flex items-center gap-2">
+                        <span>Gói dịch vụ: {isProActive ? 'AgriVision Plus' : 'Gói Miễn Phí'}</span>
+                      </div>
+                      <div className="text-xs text-[#737373] dark:text-[#8e8e8e]">
+                        {isProActive
+                          ? 'Đang kích hoạt gói không giới hạn'
+                          : 'Nâng cấp chỉ 30.000đ/tháng mở khóa toàn diện AI'}
+                      </div>
+                    </div>
+                  </div>
+                  <ChevronRight className="w-4 h-4 text-[#8e8e8e] shrink-0" strokeWidth={1.5} />
+                </button>
               </div>
             </div>
           )}
@@ -1106,6 +1175,9 @@ function SettingsView() {
           </div>
         </div>
       )}
+
+      {/* Coin & Top-up Modal */}
+      <CoinModal />
     </div>
   );
 }

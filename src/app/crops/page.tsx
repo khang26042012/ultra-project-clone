@@ -17,6 +17,8 @@ import {
 } from 'lucide-react';
 import { ChatProvider, useChat } from '@/context/ChatContext';
 import AppSidebar from '@/components/sidebar/AppSidebar';
+import CoinModal from '@/components/modals/CoinModal';
+import HelpModal from '@/components/modals/HelpModal';
 import { CropRecord } from '@/lib/cropSearch';
 
 const CATEGORIES = [
@@ -651,6 +653,10 @@ function CropsEncyclopediaView() {
           </div>
         </div>
       )}
+
+      {/* Global Modals for Sidebar Navigation */}
+      <CoinModal />
+      <HelpModal />
     </div>
   );
 }

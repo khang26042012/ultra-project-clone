@@ -8,6 +8,7 @@ import {
   HelpCircle,
   LogOut,
   ChevronRight,
+  Coins,
 } from 'lucide-react';
 
 interface ProfileMenuProps {
@@ -17,7 +18,7 @@ interface ProfileMenuProps {
 
 export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
   const router = useRouter();
-  const { userProfile, setIsHelpOpen, logout } = useChat();
+  const { userProfile, setIsHelpOpen, setIsCoinModalOpen, xuBalance, isProActive, logout } = useChat();
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -76,6 +77,23 @@ export default function ProfileMenu({ isOpen, onClose }: ProfileMenuProps) {
 
       {/* Menu Actions */}
       <div className="space-y-0.5">
+        {/* Ví AgriXu & Nạp tiền */}
+        <button
+          onClick={() => {
+            onClose();
+            setIsCoinModalOpen(true);
+          }}
+          className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-left hover:bg-amber-50/50 dark:hover:bg-amber-950/20 text-xs font-medium text-[#5d5d5d] hover:text-[#0d0d0d] dark:text-[#b4b4b4] dark:hover:text-white transition-colors cursor-pointer"
+        >
+          <div className="flex items-center gap-3">
+            <Coins className="w-4 h-4 text-amber-500" strokeWidth={1.5} />
+            <span>Ví AgriXu & Nạp tiền</span>
+          </div>
+          <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-amber-500/15 text-amber-600 dark:text-amber-400">
+            {isProActive ? 'PRO' : `${xuBalance} Xu`}
+          </span>
+        </button>
+
         <button
           data-testid="profile-settings-button"
           onClick={() => {

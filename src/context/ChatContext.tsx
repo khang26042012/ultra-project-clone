@@ -38,7 +38,11 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
   const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
   const [isHelpOpen, setIsHelpOpen] = useState<boolean>(false);
   const [isUpgradeOpen, setIsUpgradeOpen] = useState<boolean>(false);
+  const [isCoinModalOpen, setIsCoinModalOpen] = useState<boolean>(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
+  const [xuBalance, setXuBalanceState] = useState<number>(20);
+  const [subscriptionTier, setSubscriptionTier] = useState<string>('free');
+  const [isProActive, setIsProActive] = useState<boolean>(false);
   const [isStreaming, setIsStreaming] = useState<boolean>(false);
   const [isHydrated, setIsHydrated] = useState<boolean>(false);
   const [customAvatar, setCustomAvatar] = useState<string | undefined>(undefined);
@@ -48,11 +52,21 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
   const conversationsRef = useRef<Conversation[]>(conversations);
   conversationsRef.current = conversations;
 
-  // Safe client-only read for custom avatar to prevent Hydration Mismatch
+  // Safe client-only read for custom avatar and Xu balance to prevent Hydration Mismatch
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('agrivision_custom_avatar');
       if (saved) setCustomAvatar(saved);
+
+      const savedXu = localStorage.getItem('agrivision_xu_balance');
+      if (savedXu) {
+        const parsed = parseInt(savedXu, 10);
+        if (!isNaN(parsed)) setXuBalanceState(parsed);
+      }
+      const savedTier = localStorage.getItem('agrivision_subscription_tier');
+      if (savedTier) setSubscriptionTier(savedTier);
+      const savedPro = localStorage.getItem('agrivision_is_pro');
+      if (savedPro) setIsProActive(savedPro === 'true');
     }
   }, []);
 
@@ -80,6 +94,69 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
       console.warn('Supabase profile sync error:', err);
     }
   }, []);
+
+  const setXuBalance = useCallback((balanceOrFn: number | ((prev: number) => number)) => {
+    setXuBalanceState((prev) => {
+      const next = typeof balanceOrFn === 'function' ? balanceOrFn(prev) : balanceOrFn;
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('agrivision_xu_balance', next.toString());
+      }
+      return next;
+    });
+  }, []);
+
+  const refreshXuStatus = useCallback(async () => {
+    try {
+      const userId = currentUser?.id || 'guest';
+      const res = await fetch(`/api/user/status?userId=${encodeURIComponent(userId)}`);
+      if (res.ok) {
+        const data = await res.json();
+        if (data.success) {
+          const bal = data.xu_balance ?? 20;
+          setXuBalanceState(bal);
+          setSubscriptionTier(data.subscription_tier || 'free');
+          setIsProActive(Boolean(data.is_pro_active));
+          if (typeof window !== 'undefined') {
+            localStorage.setItem('agrivision_xu_balance', bal.toString());
+            localStorage.setItem('agrivision_subscription_tier', data.subscription_tier || 'free');
+            localStorage.setItem('agrivision_is_pro', Boolean(data.is_pro_active).toString());
+          }
+        }
+      }
+    } catch (err) {
+      console.warn('refreshXuStatus error:', err);
+    }
+  }, [currentUser]);
+
+  const claimDailyBonus = useCallback(async (): Promise<{ awarded: boolean; amount: number; message?: string }> => {
+    try {
+      const userId = currentUser?.id || 'guest';
+      const res = await fetch('/api/user/status', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'claim_daily_bonus', userId }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.bonus_result?.awarded) {
+          const newBal = data.xu_balance ?? (xuBalance + 3);
+          setXuBalance(newBal);
+          return { awarded: true, amount: 3 };
+        } else {
+          return {
+            awarded: false,
+            amount: 0,
+            message: data.bonus_result?.amount === 0 ? 'Bạn đã nhận thưởng điểm danh hôm nay rồi, hãy quay lại sau 24h nhé!' : undefined,
+          };
+        }
+      }
+    } catch (e) {
+      console.warn('claimDailyBonus network error:', e);
+    }
+    // Fallback for offline / guest demo
+    setXuBalance((prev) => prev + 3);
+    return { awarded: true, amount: 3 };
+  }, [currentUser, xuBalance, setXuBalance]);
 
   const syncConversationToSupabase = useCallback(async (conv: Conversation, userId?: string) => {
     if (!userId) return;
@@ -656,6 +733,11 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
     const trimmedContent = content.trim();
     if ((!trimmedContent && !imageUrl) || isStreaming || isSendingRef.current) return;
 
+    if (!isProActive && xuBalance <= 0) {
+      setIsCoinModalOpen(true);
+      return;
+    }
+
     // Mutex lock to prevent double clicks / race conditions
     isSendingRef.current = true;
 
@@ -1027,6 +1109,9 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
         )
       );
     } finally {
+      if (!isProActive) {
+        setXuBalance((prev) => Math.max(0, prev - 1));
+      }
       if (wakeLock) {
         try {
           wakeLock.release();
@@ -1113,8 +1198,16 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
         setIsHelpOpen,
         isUpgradeOpen,
         setIsUpgradeOpen,
+        isCoinModalOpen,
+        setIsCoinModalOpen,
         isAuthModalOpen,
         setIsAuthModalOpen,
+        xuBalance,
+        setXuBalance,
+        subscriptionTier,
+        isProActive,
+        claimDailyBonus,
+        refreshXuStatus,
         currentUser,
         login,
         register,
