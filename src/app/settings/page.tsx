@@ -186,7 +186,11 @@ function SettingsView() {
   const fontLabel =
     fontSize === 'small' ? 'Nhỏ (13px)' : fontSize === 'large' ? 'Lớn (17px)' : 'Vừa (15px)';
   const modelLabel =
-    selectedModel === 'ag/gemini-3.8-flash'
+    selectedModel === 'ag/claude-opus-4-6-thinking'
+      ? 'Claude 4.6 Opus Thinking'
+      : selectedModel === 'ag/claude-sonnet-4-6'
+      ? 'Claude 4.6 Sonnet'
+      : selectedModel === 'ag/gemini-3.8-flash'
       ? 'Gemini 3.8 Flash (Nhanh)'
       : 'Gemini 3.8 Flash High (Lâm sàng)';
 
@@ -912,6 +916,62 @@ function SettingsView() {
                   </div>
                 </div>
                 {selectedModel === 'ag/gemini-3.8-flash' && (
+                  <Check className="w-4 h-4 text-emerald-600 dark:text-emerald-400" strokeWidth={1.5} />
+                )}
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setSelectedModel('ag/claude-sonnet-4-6');
+                  setActiveModal(null);
+                }}
+                className={`w-full p-3 rounded-2xl border text-left transition-all cursor-pointer flex items-center justify-between ${
+                  selectedModel === 'ag/claude-sonnet-4-6'
+                    ? 'border-[#0d0d0d] dark:border-white bg-[#f7f7f7] dark:bg-[#2a2a2a]'
+                    : 'border-[#e5e5e5] dark:border-[#333]'
+                }`}
+              >
+                <div>
+                  <div className="font-semibold text-sm text-[#0d0d0d] dark:text-white flex items-center gap-2">
+                    <span>Claude 4.6 Sonnet</span>
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-700 dark:text-amber-300">
+                      PRO
+                    </span>
+                  </div>
+                  <div className="text-[11px] text-[#737373] dark:text-[#8e8e8e] mt-0.5">
+                    Lập luận sắc bén, chẩn đoán bệnh học lâm sàng đa phương thức
+                  </div>
+                </div>
+                {selectedModel === 'ag/claude-sonnet-4-6' && (
+                  <Check className="w-4 h-4 text-emerald-600 dark:text-emerald-400" strokeWidth={1.5} />
+                )}
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setSelectedModel('ag/claude-opus-4-6-thinking');
+                  setActiveModal(null);
+                }}
+                className={`w-full p-3 rounded-2xl border text-left transition-all cursor-pointer flex items-center justify-between ${
+                  selectedModel === 'ag/claude-opus-4-6-thinking'
+                    ? 'border-[#0d0d0d] dark:border-white bg-[#f7f7f7] dark:bg-[#2a2a2a]'
+                    : 'border-[#e5e5e5] dark:border-[#333]'
+                }`}
+              >
+                <div>
+                  <div className="font-semibold text-sm text-[#0d0d0d] dark:text-white flex items-center gap-2">
+                    <span>Claude 4.6 Opus Thinking</span>
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-purple-500/15 text-purple-700 dark:text-purple-300">
+                      Deep Think
+                    </span>
+                  </div>
+                  <div className="text-[11px] text-[#737373] dark:text-[#8e8e8e] mt-0.5">
+                    Siêu suy luận sâu với cơ chế chuỗi tư duy mở rộng cho ca bệnh phức tạp
+                  </div>
+                </div>
+                {selectedModel === 'ag/claude-opus-4-6-thinking' && (
                   <Check className="w-4 h-4 text-emerald-600 dark:text-emerald-400" strokeWidth={1.5} />
                 )}
               </button>

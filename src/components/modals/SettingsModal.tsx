@@ -321,6 +321,18 @@ export default function SettingsModal() {
                         badge: 'Tốc độ cao',
                         desc: 'Phản hồi nhanh siêu tốc, phù hợp tra cứu tức thì danh mục thuốc BVTV và cách bón phân đơn giản.',
                       },
+                      {
+                        id: 'ag/claude-sonnet-4-6',
+                        name: 'ag/claude-sonnet-4-6',
+                        badge: 'PRO',
+                        desc: 'Mô hình đa phương thức cao cấp của Anthropic, phân tích bệnh học lâm sàng sâu sắc.',
+                      },
+                      {
+                        id: 'ag/claude-opus-4-6-thinking',
+                        name: 'ag/claude-opus-4-6-thinking',
+                        badge: 'Deep Think',
+                        desc: 'Mô hình suy luận tối thượng với chuỗi tư duy mở rộng (Thinking Mode) cho các ca bệnh nan giải.',
+                      },
                     ].map((m) => {
                       const isSelected = selectedModel === m.id;
                       return (

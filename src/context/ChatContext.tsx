@@ -19,6 +19,18 @@ export const AVAILABLE_MODELS: ModelOption[] = [
     description: 'Mô hình phản hồi siêu tốc, trả lời nhanh cho các câu hỏi phổ thông',
     badge: 'Nhanh',
   },
+  {
+    id: 'ag/claude-sonnet-4-6',
+    name: 'Claude 4.6 Sonnet',
+    description: 'Mô hình đa phương thức cao cấp của Anthropic, phân tích bệnh học lâm sàng và xử lý sâu sắc',
+    badge: 'PRO',
+  },
+  {
+    id: 'ag/claude-opus-4-6-thinking',
+    name: 'Claude 4.6 Opus Thinking',
+    description: 'Mô hình suy luận tối thượng với chuỗi tư duy mở rộng (Thinking Mode), chẩn đoán các ca bệnh nan giải',
+    badge: 'Thinking',
+  },
 ];
 
 const INITIAL_CONVERSATIONS: Conversation[] = [];

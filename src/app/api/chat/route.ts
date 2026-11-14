@@ -163,8 +163,14 @@ export async function POST(req: NextRequest) {
     ...conversationalMessages,
   ];
 
-  const targetModel =
-    model === 'ag/gemini-3.8-flash' ? 'ag/gemini-3.8-flash' : LOCKED_MODEL;
+  const SUPPORTED_MODELS = [
+    'ag/gemini-3.8-flash-high',
+    'ag/gemini-3.8-flash',
+    'ag/claude-sonnet-4-6',
+    'ag/claude-opus-4-6-thinking',
+  ];
+
+  const targetModel = SUPPORTED_MODELS.includes(model) ? model : LOCKED_MODEL;
 
   let isCancelled = false;
   let keepAliveInterval: NodeJS.Timeout | null = null;
