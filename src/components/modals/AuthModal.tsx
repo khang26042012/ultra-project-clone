@@ -116,9 +116,6 @@ export default function AuthModal() {
 
         {/* Brand Header */}
         <div className="text-center mb-6">
-          <div className="w-10 h-10 mx-auto rounded-xl bg-[#0d0d0d] text-white dark:bg-white dark:text-black flex items-center justify-center font-bold text-sm shadow-xs mb-3">
-            AV
-          </div>
           <h2 className="text-2xl font-bold tracking-tight text-[#0d0d0d] dark:text-white">
             {mode === 'login' ? 'Đăng nhập AgriVision' : 'Tạo tài khoản mới'}
           </h2>

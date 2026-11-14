@@ -259,9 +259,6 @@ export default function AppSidebar() {
               }}
               className="font-semibold text-[#0d0d0d] dark:text-white tracking-tight text-base pl-1 flex items-center gap-2 hover:opacity-80 transition-opacity"
             >
-              <span className="w-5 h-5 rounded-md bg-[#0d0d0d] text-white dark:bg-white dark:text-black flex items-center justify-center font-bold text-[10px] shadow-xs">
-                AV
-              </span>
               <span>AgriVision</span>
             </Link>
 

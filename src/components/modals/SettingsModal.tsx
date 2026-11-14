@@ -498,9 +498,6 @@ export default function SettingsModal() {
               <div className="space-y-4">
                 <div className="p-4 rounded-2xl bg-[#f7f7f8] dark:bg-[#171717] border border-[#e5e5e5] dark:border-[#333]">
                   <div className="flex items-center gap-2.5 mb-2">
-                    <span className="w-7 h-7 rounded-lg bg-[#0d0d0d] text-white dark:bg-white dark:text-black flex items-center justify-center font-bold text-xs shadow-xs">
-                      AV
-                    </span>
                     <div>
                       <h3 className="text-sm font-bold text-[#0d0d0d] dark:text-white leading-none">AgriVision</h3>
                       <span className="text-[10px] text-[#737373] dark:text-[#8e8e8e]">Phiên bản 1.0 (Bản chính thức)</span>
