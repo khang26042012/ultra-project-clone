@@ -105,8 +105,27 @@ export async function checkAndAwardDailyBonus(userId: string): Promise<{
  * - Tổng số lần đã chat/gọi AI
  * - Tổng số ảnh đã khoanh/chẩn đoán
  */
-export async function getUserStatus(userId?: string): Promise<UserStatusResult> {
-  if (!userId || userId === 'guest') {
+export async function getUserStatus(userId?: string, email?: string): Promise<UserStatusResult> {
+  let resolvedUserId = userId;
+  const cleanEmail = email ? email.trim().toLowerCase() : undefined;
+
+  // Nếu userId là undefined hoặc guest nhưng có email, tìm kiếm theo email trong profiles
+  if ((!resolvedUserId || resolvedUserId === 'guest') && cleanEmail) {
+    try {
+      const { data: profByEmail } = await supabaseAdmin
+        .from('profiles')
+        .select('id')
+        .eq('email', cleanEmail)
+        .maybeSingle();
+      if (profByEmail?.id) {
+        resolvedUserId = profByEmail.id;
+      }
+    } catch (e) {
+      console.warn('Error resolving profile by email:', e);
+    }
+  }
+
+  if (!resolvedUserId || resolvedUserId === 'guest') {
     return {
       success: true,
       user_id: 'guest',
@@ -125,7 +144,7 @@ export async function getUserStatus(userId?: string): Promise<UserStatusResult> 
   }
 
   // 1. Kiểm tra và cộng thưởng 3 Xu nếu đã qua 24h
-  const dailyBonus = await checkAndAwardDailyBonus(userId);
+  const dailyBonus = await checkAndAwardDailyBonus(resolvedUserId);
 
   // 2. Lấy thông tin số dư Xu & Gói từ Supabase RPC
   let xuBalance = 20;
@@ -138,7 +157,7 @@ export async function getUserStatus(userId?: string): Promise<UserStatusResult> 
   try {
     const { data: summary, error: summaryErr } = await supabaseAdmin.rpc(
       'get_user_xu_summary',
-      { p_user_id: userId }
+      { p_user_id: resolvedUserId }
     );
 
     if (summary && summary.success) {
@@ -154,11 +173,20 @@ export async function getUserStatus(userId?: string): Promise<UserStatusResult> 
       if (summaryErr) {
         console.warn('RPC get_user_xu_summary fallback to profiles table:', summaryErr);
       }
-      const { data: profile } = await supabaseAdmin
+      let { data: profile } = await supabaseAdmin
         .from('profiles')
         .select('*')
-        .eq('id', userId)
+        .eq('id', resolvedUserId)
         .maybeSingle();
+
+      if (!profile && cleanEmail) {
+        const { data: p2 } = await supabaseAdmin
+          .from('profiles')
+          .select('*')
+          .eq('email', cleanEmail)
+          .maybeSingle();
+        if (p2) profile = p2;
+      }
 
       if (profile) {
         xuBalance = profile.xu_balance ?? 20;
@@ -184,7 +212,7 @@ export async function getUserStatus(userId?: string): Promise<UserStatusResult> 
     const { data: profileData } = await supabaseAdmin
       .from('profiles')
       .select('name')
-      .eq('id', userId)
+      .eq('id', resolvedUserId)
       .maybeSingle();
 
     if (profileData?.name) {
@@ -194,7 +222,7 @@ export async function getUserStatus(userId?: string): Promise<UserStatusResult> 
     const { data: convs } = await supabaseAdmin
       .from('conversations')
       .select('id')
-      .eq('user_id', userId);
+      .eq('user_id', resolvedUserId);
 
     if (convs && convs.length > 0) {
       const convIds = convs.map((c) => c.id);
@@ -232,7 +260,7 @@ export async function getUserStatus(userId?: string): Promise<UserStatusResult> 
 
   return {
     success: true,
-    user_id: userId,
+    user_id: resolvedUserId,
     name: userName,
     subscription_tier: subscriptionTier,
     tier_display: tierDisplay,

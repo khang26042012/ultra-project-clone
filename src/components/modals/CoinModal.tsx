@@ -23,6 +23,7 @@ export default function CoinModal() {
     xuBalance,
     isProActive,
     claimDailyBonus,
+    refreshXuStatus,
     currentUser,
     setIsUpgradeOpen,
   } = useChat();
@@ -57,6 +58,7 @@ export default function CoinModal() {
     if (isCoinModalOpen) {
       document.body.style.overflow = 'hidden';
       window.addEventListener('keydown', handleKeyDown);
+      refreshXuStatus();
     }
     return () => {
       document.body.style.overflow = '';

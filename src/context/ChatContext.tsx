@@ -138,19 +138,26 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
 
   const refreshXuStatus = useCallback(async () => {
     try {
-      const userId = currentUser?.id || 'guest';
-      const res = await fetch(`/api/user/status?userId=${encodeURIComponent(userId)}`);
+      const userId = currentUser?.id;
+      const email = currentUser?.email;
+      const params = new URLSearchParams();
+      if (userId && userId !== 'guest') params.set('userId', userId);
+      if (email) params.set('email', email);
+
+      const res = await fetch(`/api/user/status?${params.toString()}`);
       if (res.ok) {
         const data = await res.json();
         if (data.success) {
-          const bal = data.xu_balance ?? 20;
-          setXuBalanceState(bal);
-          setSubscriptionTier(data.subscription_tier || 'free');
-          setIsProActive(Boolean(data.is_pro_active));
-          if (typeof window !== 'undefined') {
-            localStorage.setItem('agrivision_xu_balance', bal.toString());
-            localStorage.setItem('agrivision_subscription_tier', data.subscription_tier || 'free');
-            localStorage.setItem('agrivision_is_pro', Boolean(data.is_pro_active).toString());
+          if (data.user_id !== 'guest' || (!userId && !email)) {
+            const bal = data.xu_balance ?? 20;
+            setXuBalanceState(bal);
+            setSubscriptionTier(data.subscription_tier || 'free');
+            setIsProActive(Boolean(data.is_pro_active));
+            if (typeof window !== 'undefined') {
+              localStorage.setItem('agrivision_xu_balance', bal.toString());
+              localStorage.setItem('agrivision_subscription_tier', data.subscription_tier || 'free');
+              localStorage.setItem('agrivision_is_pro', Boolean(data.is_pro_active).toString());
+            }
           }
         }
       }
@@ -158,6 +165,25 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
       console.warn('refreshXuStatus error:', err);
     }
   }, [currentUser]);
+
+  // Tự động đồng bộ số dư Xu & Gói cước từ Database khi user thay đổi hoặc vào lại tab
+  useEffect(() => {
+    refreshXuStatus();
+  }, [currentUser?.email, currentUser?.id, refreshXuStatus]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const onFocus = () => refreshXuStatus();
+    const onVisChange = () => {
+      if (document.visibilityState === 'visible') refreshXuStatus();
+    };
+    window.addEventListener('focus', onFocus);
+    document.addEventListener('visibilitychange', onVisChange);
+    return () => {
+      window.removeEventListener('focus', onFocus);
+      document.removeEventListener('visibilitychange', onVisChange);
+    };
+  }, [refreshXuStatus]);
 
   const claimDailyBonus = useCallback(async (): Promise<{ awarded: boolean; amount: number; message?: string }> => {
     try {
@@ -627,6 +653,7 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
 
         // Tải toàn bộ danh sách hội thoại từ Cloud về
         await loadConversationsForUser(loggedUser.id);
+        refreshXuStatus();
         return { success: true };
       }
 

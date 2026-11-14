@@ -57,11 +57,16 @@ function SettingsView() {
     xuBalance,
     subscriptionTier,
     isProActive,
+    refreshXuStatus,
     setIsCoinModalOpen,
     setIsAuthModalOpen,
   } = useChat();
 
   const isPlusUser = isProActive || ['plus', 'pro', 'coop'].includes((subscriptionTier || '').toLowerCase());
+
+  useEffect(() => {
+    refreshXuStatus();
+  }, [refreshXuStatus]);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isProcessingAvatar, setIsProcessingAvatar] = useState(false);
