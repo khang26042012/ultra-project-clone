@@ -18,6 +18,7 @@ import {
   Radio,
   AlertTriangle,
   RotateCcw,
+  Lock,
 } from 'lucide-react';
 import { ThemeMode, FontSizeOption } from '@/types/chat';
 
@@ -40,7 +41,12 @@ export default function SettingsModal() {
     conversations,
     clearChatHistory,
     exportBackupJson,
+    subscriptionTier,
+    isProActive,
+    setIsCoinModalOpen,
   } = useChat();
+
+  const isPlusUser = isProActive || ['plus', 'pro', 'coop'].includes((subscriptionTier || '').toLowerCase());
 
   const [activeTab, setActiveTab] = useState<TabType>('general');
   const [language, setLanguage] = useState('Tiếng Việt (Mặc định)');
@@ -314,34 +320,47 @@ export default function SettingsModal() {
                         name: 'ag/gemini-3.8-flash-high (Mặc định)',
                         badge: 'Khuyên dùng',
                         desc: 'Suy luận bệnh học chuyên sâu, hỗ trợ chuỗi tư duy reasoning_content và phác đồ điều trị đa giai đoạn.',
+                        requiresPlus: false,
                       },
                       {
                         id: 'ag/gemini-3.8-flash',
                         name: 'ag/gemini-3.8-flash',
                         badge: 'Tốc độ cao',
                         desc: 'Phản hồi nhanh siêu tốc, phù hợp tra cứu tức thì danh mục thuốc BVTV và cách bón phân đơn giản.',
+                        requiresPlus: false,
                       },
                       {
                         id: 'ag/claude-sonnet-4-6',
                         name: 'ag/claude-sonnet-4-6',
-                        badge: 'PRO',
+                        badge: 'Gói Plus',
                         desc: 'Mô hình đa phương thức cao cấp của Anthropic, phân tích bệnh học lâm sàng sâu sắc.',
+                        requiresPlus: true,
                       },
                       {
                         id: 'ag/claude-opus-4-6-thinking',
                         name: 'ag/claude-opus-4-6-thinking',
-                        badge: 'Deep Think',
+                        badge: 'Gói Plus',
                         desc: 'Mô hình suy luận tối thượng với chuỗi tư duy mở rộng (Thinking Mode) cho các ca bệnh nan giải.',
+                        requiresPlus: true,
                       },
                     ].map((m) => {
                       const isSelected = selectedModel === m.id;
+                      const isLocked = m.requiresPlus && !isPlusUser;
                       return (
                         <div
                           key={m.id}
-                          onClick={() => setSelectedModel(m.id)}
+                          onClick={() => {
+                            if (isLocked) {
+                              setIsCoinModalOpen(true);
+                              return;
+                            }
+                            setSelectedModel(m.id);
+                          }}
                           className={`p-3.5 rounded-2xl border transition-all cursor-pointer ${
                             isSelected
                               ? 'border-[#0d0d0d] bg-[#f9f9f9] dark:border-white dark:bg-[#252525]'
+                              : isLocked
+                              ? 'border-amber-500/30 bg-amber-500/5 hover:border-amber-500/50'
                               : 'border-[#e5e5e5] hover:border-[#b4b4b4] dark:border-[#383838] dark:hover:border-[#525252]'
                           }`}
                         >
@@ -358,16 +377,23 @@ export default function SettingsModal() {
                                   <div className="w-2 h-2 rounded-full bg-[#0d0d0d] dark:bg-white" />
                                 )}
                               </div>
-                              <span className="font-semibold text-xs text-[#0d0d0d] dark:text-white font-mono">
+                              <span className="font-semibold text-xs text-[#0d0d0d] dark:text-white font-mono flex items-center gap-1.5">
                                 {m.name}
+                                {isLocked && <Lock className="w-3 h-3 text-amber-500" />}
                               </span>
                             </div>
-                            <span className="text-[10px] px-2 py-0.5 rounded-full bg-black/5 dark:bg-white/10 text-[#555555] dark:text-[#cccccc] font-medium">
+                            <span
+                              className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${
+                                m.requiresPlus
+                                  ? 'bg-amber-500/20 text-amber-700 dark:text-amber-300 border border-amber-500/30'
+                                  : 'bg-black/5 dark:bg-white/10 text-[#555555] dark:text-[#cccccc]'
+                              }`}
+                            >
                               {m.badge}
                             </span>
                           </div>
                           <p className="text-xs text-[#666666] dark:text-[#a0a0a0] pl-6 leading-relaxed">
-                            {m.desc}
+                            {m.desc} {isLocked && <span className="text-amber-600 dark:text-amber-400 font-semibold">(Yêu cầu nâng cấp Gói Plus)</span>}
                           </p>
                         </div>
                       );

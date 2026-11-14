@@ -23,13 +23,15 @@ export const AVAILABLE_MODELS: ModelOption[] = [
     id: 'ag/claude-sonnet-4-6',
     name: 'Claude 4.6 Sonnet',
     description: 'Mô hình đa phương thức cao cấp của Anthropic, phân tích bệnh học lâm sàng và xử lý sâu sắc',
-    badge: 'PRO',
+    badge: 'Gói Plus',
+    requiresPlus: true,
   },
   {
     id: 'ag/claude-opus-4-6-thinking',
     name: 'Claude 4.6 Opus Thinking',
     description: 'Mô hình suy luận tối thượng với chuỗi tư duy mở rộng (Thinking Mode), chẩn đoán các ca bệnh nan giải',
-    badge: 'Thinking',
+    badge: 'Gói Plus',
+    requiresPlus: true,
   },
 ];
 
@@ -81,6 +83,23 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
       if (savedPro) setIsProActive(savedPro === 'true');
     }
   }, []);
+
+  const isPlusActive = isProActive || ['plus', 'pro', 'coop'].includes(subscriptionTier.toLowerCase());
+
+  // Tự động chuyển về Gemini nếu hết hạn gói Plus mà đang chọn Claude
+  useEffect(() => {
+    if (!isPlusActive && selectedModel.includes('claude')) {
+      setSelectedModel('ag/gemini-3.8-flash-high');
+    }
+  }, [isPlusActive, selectedModel]);
+
+  const handleSetSelectedModel = useCallback((modelId: string) => {
+    if (modelId.includes('claude') && !isPlusActive) {
+      setIsCoinModalOpen(true);
+      return;
+    }
+    setSelectedModel(modelId);
+  }, [isPlusActive]);
 
   // Helper to resolve user-scoped storage key
   const getChatStorageKey = useCallback((userId?: string) => {
@@ -1192,7 +1211,7 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
         activeConversationId,
         activeConversation,
         selectedModel,
-        setSelectedModel,
+        setSelectedModel: handleSetSelectedModel,
         theme,
         setTheme,
         fontSize,

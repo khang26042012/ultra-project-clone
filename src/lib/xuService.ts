@@ -165,7 +165,7 @@ export async function getUserStatus(userId?: string): Promise<UserStatusResult> 
         totalDeposited = profile.total_xu_deposited || 0;
         totalSpent = profile.total_xu_spent || 0;
         isProActive =
-          ['pro', 'coop'].includes(subscriptionTier.toLowerCase()) &&
+          ['pro', 'coop', 'plus'].includes(subscriptionTier.toLowerCase()) &&
           (!tierExpiresAt || new Date(tierExpiresAt) > new Date());
       }
     }
@@ -219,7 +219,8 @@ export async function getUserStatus(userId?: string): Promise<UserStatusResult> 
 
   const tierDisplayMap: Record<string, string> = {
     free: 'Gói Miễn phí (Tân thủ)',
-    pro: 'Gói Nhà Vườn Pro',
+    plus: 'Gói AgriVision Plus',
+    pro: 'Gói AgriVision Plus',
     coop: 'Gói Hợp Tác Xã (B2B)',
   };
 

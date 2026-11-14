@@ -126,10 +126,10 @@ export default function UpgradeModal() {
                 <span>AgriVision Plus</span>
               </div>
               <div className="text-xl font-bold text-amber-600 dark:text-amber-400 mb-2">
-                30.000đ <span className="text-xs font-normal text-[#8e8e8e]">/ tháng</span>
+                50.000đ <span className="text-xs font-normal text-[#8e8e8e]">/ tháng</span>
               </div>
               <p className="text-xs text-[#5d5d5d] dark:text-[#b4b4b4] mb-4">
-                Không giới hạn lượt chẩn đoán AI, suy luận chuyên sâu và hỗ trợ nhà vườn 24/7.
+                Không giới hạn lượt chẩn đoán AI, mở khóa Claude 4.6 & cấp 600 Xu hàng tháng.
               </p>
 
               <div className="space-y-2 text-xs text-[#0d0d0d] dark:text-[#ececec]">
@@ -147,7 +147,7 @@ export default function UpgradeModal() {
                 </div>
                 <div className="flex items-center gap-2">
                   <Check className="w-3.5 h-3.5 text-amber-500 shrink-0" strokeWidth={2} />
-                  <span>Bình Phun Ảo BVTV WALES phòng ngừa ngộ độc</span>
+                  <span className="font-semibold text-amber-600 dark:text-amber-400">Được cấp 600 Xu sử dụng hàng tháng</span>
                 </div>
               </div>
             </div>

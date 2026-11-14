@@ -41,10 +41,10 @@ export default function CoinModal() {
     xu: string;
     code: string;
   }>({
-    id: 'pack_pro_month',
+    id: 'pack_plus_month',
     name: 'Gói Plus Tháng (Nhà Vườn)',
-    price: '30.000đ',
-    xu: '500 Xu / Không giới hạn',
+    price: '50.000đ',
+    xu: 'Được cấp 600 Xu / Không giới hạn',
     code: 'AGRI PLUS',
   });
 
@@ -211,10 +211,10 @@ export default function CoinModal() {
               <div
                 onClick={() => {
                   setSelectedPack({
-                    id: 'pack_pro_month',
+                    id: 'pack_plus_month',
                     name: 'Gói Plus Tháng (Nhà Vườn)',
-                    price: '30.000đ',
-                    xu: 'Không giới hạn lượt chat',
+                    price: '50.000đ',
+                    xu: 'Được cấp 600 Xu / Không giới hạn',
                     code: 'AGRI PLUS',
                   });
                   setActiveTab('qr');
@@ -240,7 +240,7 @@ export default function CoinModal() {
                 </div>
 
                 <div className="mt-3 flex items-baseline gap-2">
-                  <span className="text-xl font-black text-amber-600 dark:text-amber-400">30.000đ</span>
+                  <span className="text-xl font-black text-amber-600 dark:text-amber-400">50.000đ</span>
                   <span className="text-xs text-[#737373] dark:text-[#8e8e8e]">/ tháng</span>
                 </div>
 
@@ -259,7 +259,7 @@ export default function CoinModal() {
                   </div>
                   <div className="flex items-center gap-2">
                     <Check className="w-3.5 h-3.5 text-emerald-500 shrink-0" strokeWidth={2} />
-                    <span>Trọn bộ tính năng Bình Phun Ảo BVTV WALES</span>
+                    <span className="font-semibold text-amber-600 dark:text-amber-400">Được cấp 600 Xu sử dụng hàng tháng</span>
                   </div>
                 </div>
 
@@ -271,41 +271,8 @@ export default function CoinModal() {
                     type="button"
                     className="px-3 py-1.5 rounded-xl bg-amber-500 text-white font-semibold text-xs shadow-xs"
                   >
-                    Nâng cấp 30.000đ
+                    Nâng cấp 50.000đ
                   </button>
-                </div>
-              </div>
-
-              {/* Year Package */}
-              <div
-                onClick={() => {
-                  setSelectedPack({
-                    id: 'pack_pro_year',
-                    name: 'Gói Năm Nhà Vườn Pro',
-                    price: '299.000đ',
-                    xu: '6.000 Xu + 1.000 Xu thưởng',
-                    code: 'AGRI YEAR',
-                  });
-                  setActiveTab('qr');
-                }}
-                className="p-3.5 rounded-2xl border border-[#e5e5e5] dark:border-[#333] bg-[#fafafa] dark:bg-[#212121] hover:border-amber-500/50 transition-all cursor-pointer flex items-center justify-between"
-              >
-                <div>
-                  <div className="flex items-center gap-2">
-                    <span className="font-bold text-xs text-[#0d0d0d] dark:text-white">
-                      Gói Năm Nhà Vườn Pro (Trọn Gói)
-                    </span>
-                    <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
-                      Tiết kiệm 36%
-                    </span>
-                  </div>
-                  <div className="text-[11px] text-[#737373] dark:text-[#8e8e8e] mt-0.5">
-                    6.000 Xu + 1.000 Xu thưởng trọn năm
-                  </div>
-                </div>
-                <div className="text-right">
-                  <div className="font-bold text-sm text-[#0d0d0d] dark:text-white">299.000đ</div>
-                  <div className="text-[10px] text-[#737373]">/ năm</div>
                 </div>
               </div>
             </div>

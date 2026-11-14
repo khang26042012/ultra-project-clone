@@ -4,7 +4,7 @@ import { searchCropKnowledge } from '@/lib/cropSearch';
 import { executeTavilySearch } from '@/lib/tavilySearch';
 import { SEGMENT_CROP_LESION_TOOL } from '@/lib/aiTools';
 import { segmentAndAnnotateCropLesion } from '@/lib/visionSegmentation';
-import { deductChatXu } from '@/lib/xuService';
+import { deductChatXu, getUserStatus } from '@/lib/xuService';
 
 export const runtime = 'nodejs';
 
@@ -201,6 +201,29 @@ export async function POST(req: NextRequest) {
           if (keepAliveInterval) clearInterval(keepAliveInterval);
         }
       }, 2500);
+
+      // Verify Claude model access (requires Plus plan)
+      if (targetModel.includes('claude')) {
+        try {
+          const userStatus = await getUserStatus(effectiveUserId);
+          const hasPlus =
+            userStatus.is_pro_active ||
+            ['plus', 'pro', 'coop'].includes((userStatus.subscription_tier || '').toLowerCase());
+          if (!hasPlus) {
+            sendEvent({
+              token:
+                '🔒 **Mô hình Claude 4.6 yêu cầu Gói AgriVision Plus**\n\n' +
+                'Mô hình suy luận chuyên sâu Claude 4.6 (Sonnet & Opus Thinking) là đặc quyền dành riêng cho thành viên **AgriVision Plus** (50.000đ/tháng - cấp 600 Xu).\n\n' +
+                'Bà con vui lòng vào **Cài đặt** hoặc mở **Ví AgriXu** để kích hoạt gói Plus và trải nghiệm nhé!',
+            });
+            sendEvent({ done: true });
+            controller.close();
+            return;
+          }
+        } catch (checkErr) {
+          console.warn('Error checking user status for Claude model:', checkErr);
+        }
+      }
 
       const maxTurns = 6;
       let turn = 0;

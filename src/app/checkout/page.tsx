@@ -29,13 +29,13 @@ function CheckoutView() {
     code: string;
     badge?: string;
   }>({
-    id: 'pack_pro_month',
+    id: 'pack_plus_month',
     name: 'Gói Plus Tháng (Nhà Vườn)',
-    price: '30.000đ',
-    priceNumber: 30000,
-    description: 'Không giới hạn số lượt hỏi đáp AI & phân đoạn tổn thương mô lá HUD',
+    price: '50.000đ',
+    priceNumber: 50000,
+    description: 'Được cấp 600 Xu sử dụng, không giới hạn hỏi đáp & phân tích bệnh AI',
     code: 'AGRI PLUS',
-    badge: 'Phổ biến nhất',
+    badge: 'Bán chạy nhất',
   });
 
   const [copiedField, setCopiedField] = useState<string | null>(null);
@@ -51,22 +51,13 @@ function CheckoutView() {
 
   const PACKAGES = [
     {
-      id: 'pack_pro_month',
+      id: 'pack_plus_month',
       name: 'Gói Plus Tháng (Nhà Vườn)',
-      price: '30.000đ',
-      priceNumber: 30000,
-      description: 'Không giới hạn số lượt hỏi đáp & phân đoạn tổn thương mô lá HUD',
+      price: '50.000đ',
+      priceNumber: 50000,
+      description: 'Được cấp 600 Xu sử dụng, không giới hạn hỏi đáp & phân tích bệnh AI',
       code: 'AGRI PLUS',
       badge: 'Bán chạy nhất',
-    },
-    {
-      id: 'pack_pro_year',
-      name: 'Gói Năm Nhà Vườn Pro',
-      price: '299.000đ',
-      priceNumber: 299000,
-      description: 'Trọn gói cả năm + 1.000 Xu thưởng dự phòng',
-      code: 'AGRI YEAR',
-      badge: 'Tiết kiệm 36%',
     },
     {
       id: 'pack_xu_30k',
@@ -181,7 +172,7 @@ function CheckoutView() {
             <div className="p-4 rounded-2xl bg-white dark:bg-[#1e1e1e] border border-[#e5e5e5] dark:border-[#2e2e2e] shadow-2xs space-y-2 text-xs">
               <h3 className="font-bold text-[#0d0d0d] dark:text-white flex items-center gap-1.5">
                 <Sparkles className="w-4 h-4 text-amber-500" />
-                <span>Quyền lợi vượt trội của Gói Plus 30.000đ/tháng</span>
+                <span>Quyền lợi vượt trội của Gói Plus 50.000đ/tháng</span>
               </h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[#555] dark:text-[#ccc] pt-1">
                 <div className="flex items-center gap-2">
@@ -198,7 +189,7 @@ function CheckoutView() {
                 </div>
                 <div className="flex items-center gap-2">
                   <Check className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-                  <span>Mô phỏng tương thích thuốc WALES</span>
+                  <span className="font-semibold text-amber-600 dark:text-amber-400">Được cấp 600 Xu sử dụng hàng tháng</span>
                 </div>
               </div>
             </div>

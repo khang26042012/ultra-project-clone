@@ -41,6 +41,7 @@ export interface ModelOption {
   description: string;
   badge?: string;
   isDefault?: boolean;
+  requiresPlus?: boolean;
 }
 
 export type ThemeMode = 'dark' | 'light' | 'system';
