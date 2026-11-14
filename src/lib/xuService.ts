@@ -144,10 +144,12 @@ export async function getUserStatus(userId?: string): Promise<UserStatusResult> 
     if (summary && summary.success) {
       xuBalance = summary.xu_balance ?? 20;
       subscriptionTier = summary.subscription_tier || 'free';
-      isProActive = Boolean(summary.is_pro_active);
       tierExpiresAt = summary.tier_expires_at || null;
       totalDeposited = summary.total_deposited || 0;
       totalSpent = summary.total_spent || 0;
+      isProActive =
+        ['pro', 'coop', 'plus'].includes(subscriptionTier.toLowerCase()) &&
+        (!tierExpiresAt || new Date(tierExpiresAt) > new Date());
     } else {
       if (summaryErr) {
         console.warn('RPC get_user_xu_summary fallback to profiles table:', summaryErr);
